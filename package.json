@@ -1,0 +1,17 @@
+{
+  "name": "bot-web-interface",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patric Wellershaus",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "extend": "^3.0.1",
+    "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3"
+  }
+}

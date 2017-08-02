@@ -1,0 +1,54 @@
+@font-face {
+    font-family: m5x7;
+    src: url(/m5x7.ttf);
+}
+
+*{
+    font-family: m5x7, Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    line-height: 22px;
+    color: white;
+}
+
+body{
+    background-color: black;
+}
+
+.box {
+    background-color: black;
+    border: 4px solid grey;
+    margin: 8px;
+    display: inline-block;
+}
+
+.boxRow{
+    margin:5px;
+}
+
+.textDisplay{
+}
+.textDisplayLabel{
+    display:inline;
+}
+.textDisplayValue{
+    display:inline;
+}
+.border{
+    height: 25px;
+    border: 4px solid grey;
+}
+.bar{
+    height: 100%;
+    width: 10%;
+    background-color: green;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
+.barLabel{
+    position: relative;
+    top: -24px;
+    text-align: center;
+}
+.value{
+    display:inline;
+}
