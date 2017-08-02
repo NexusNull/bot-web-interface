@@ -36,12 +36,7 @@ var Client = function(socket,socketServer,id){
         var res = {
             dataAmount: self.dataIDs.length,
             dataIDs: self.dataIDs,
-            structure: [
-                {name: "name", type: "text", label: "name"},
-                {name: "xp", type: "progressBar", label: "Experience"},
-                {name: "status", type: "text", label: "Status"},
-            ]
-
+            structure: self.socketServer.structure,
         };
 
         socket.emit("setup", res);

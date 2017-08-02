@@ -10,7 +10,7 @@ var SocketServer = function() {
     var self = this;
     this.dataList = [];
     this.clients = [];
-
+    this.structure = [];
     io.sockets.on('connection', function (socket) {
         console.log("Client "+self.clients.length+" connected");
         var client = new Client(socket,self,self.clients.length);
@@ -33,7 +33,7 @@ SocketServer.prototype.registerDatSource = function (callback) {
     //TODO notify all clients
 };
 
-SocketServer.prototype.removeDatSource = function (callback) {
+SocketServer.prototype.removeDataSource = function (callback) {
     for(var i in this.dataList){
         if(this.dataList[i] == callback)
             delete this.dataList[i];
@@ -47,5 +47,9 @@ SocketServer.prototype.removeClient = function(client){
         if(this.clients[i] == client)
             delete this.clients[i];
     }
-}
+};
+
+SocketServer.prototype.setStructure = function(structure){
+    this.structure = structure;
+};
 module.exports = new SocketServer();
