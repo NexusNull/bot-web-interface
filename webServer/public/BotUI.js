@@ -17,13 +17,17 @@ BotUi.prototype.create = function(){
         var name = this.structure[i].name;
         var label = this.structure[i].label;
         var type =  this.structure[i].type;
-
+        var options = this.structure[i].options
         switch(type){
             case "text":
                 html += "<div class='"+name+" textDisplay boxRow'><div class='textDisplayLabel'>"+label+": </div><div class='textDisplayValue'>sdfsdfsdf</div></div>";
                 break;
             case "progressBar":
-                html += "<div class='"+name+" progressBarDisplay boxRow'>  <div class='border'><div class='bar'> </div> <div class='barLabel'>"+label+": <div class='value'>10%</div></div>  </div>  </div>";
+                if(!options)
+                    options = {
+                        color:"green"
+                    };
+                html += "<div class='"+name+" progressBarDisplay boxRow'>  <div class='border'><div class='bar' style='background-color: "+options.color+"'> </div> <div class='barLabel'>"+label+": <div class='value'>0%</div></div>  </div>  </div>";
                 break;
 
             case "graph":
