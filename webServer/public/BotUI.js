@@ -34,13 +34,14 @@ BotUi.prototype.create = function () {
                 html += "<div class='" + name + " progressBarDisplay boxRow'>  <div class='border'><div class='bar' style='background-color: " + options.color + "'> </div> <div class='barLabel'>" + label + ": <div class='value'>0%</div></div>  </div>  </div>";
                 break;
             case "image":
-                if(!options){
+                if(!options) {
                     options = {
-                        width:200,
-                        height:200
+                        width: 200,
+                        height: 200
                     };
-                    html += "<div class='"+name+" imageDisplay boxRow'> <img src='' style='width:"+options.width+"px;height:"+options.height+"px;'/> </div>";
                 }
+                    html += "<div class='"+name+" imageDisplay boxRow'> <img src='' style='width:"+options.width+"px;height:"+options.height+"px;'/> </div>";
+
                 break;
             case "graph":
                 //TODO implement later

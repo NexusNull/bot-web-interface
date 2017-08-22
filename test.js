@@ -3,7 +3,7 @@
  */
 var socketServer = require("./main");
 
-var publisher = socketServer.getPublisher();
+var publisher = socketServer.SocketServer.getPublisher();
 
 publisher.setStructure([
     {name: "name", type: "text", label: "name"},
@@ -13,7 +13,7 @@ publisher.setStructure([
     {name: "health", type: "progressBar", label: "Health", options:{color:"red"}},
     {name: "mana", type: "progressBar", label: "Mana",     options:{color:"blue"}},
     {name: "status", type: "text", label: "Status"},
-    {name: "image", type: "image", label: "asd"},
+    {name: "image", type: "image", label: "asd" ,options:{width:200, height:400}},
 
 ]);
 

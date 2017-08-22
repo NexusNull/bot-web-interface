@@ -61,8 +61,6 @@ Controller.prototype.start = function () {
             botUI.create();
             self.botUIs[self.dataIDs[i]] = botUI;
         }
-
-
     });
 
     socket.on("updateBotUI", function (data) {
