@@ -12,7 +12,10 @@ var Controller = function () {
 
 Controller.prototype.start = function () {
     var self = this;
-    var socket = io("http://localhost:81", {
+    var host = document.location.hostname;
+    var port = (document.location.port) ? document.location.port : 80;
+
+    var socket = io("http://" + host + ":" + (parseInt(port) + 1), {
         autoConnect: false
     });
 
@@ -24,12 +27,6 @@ Controller.prototype.start = function () {
         /**
          * @typedef {object} data
          * @typedef {Array<int>} data.dataIDs
-         * @typedef {Array<object>} data.structure;
-         */
-
-        /**
-         * @typedef {object} data
-         * @typedef {Array<int>} data.botIDs
          * @typedef {Array<object>} data.structure;
          */
         self.dataIDs = data.dataIDs;

@@ -6,20 +6,14 @@ var Client = require("./Client");
 var Publisher = require("./Publisher");
 
 var defaultPort = 81;
+var socketOpen = false;
 
-var SocketServer = function (port) {
-    var self = this;
+var SocketServer = function () {
     this.clients = [];
     this.structure = [];
     this.publisher = new Publisher();
 
-    this.io = new Server((port) ? port : defaultPort);
-    this.io.sockets.on('connection', function (socket) {
-        var client = new Client(socket, self, self.clients.length);
-
-        self.publisher.clientJoined(client);
-        self.clients.push(client);
-    });
+    this.io = null;
 };
 
 SocketServer.prototype.getPublisher = function () {
@@ -34,6 +28,21 @@ SocketServer.prototype.removeClient = function (client) {
         }
 
     }
+};
+
+SocketServer.prototype.openSocket = function (port) {
+    if (socketOpen)
+        throw Error("Socket already open");
+    socketOpen = true;
+
+    var self = this;
+    this.io = new Server((port) ? port : defaultPort);
+    this.io.sockets.on('connection', function (socket) {
+        var client = new Client(socket, self, self.clients.length);
+
+        self.publisher.clientJoined(client);
+        self.clients.push(client);
+    });
 };
 
 

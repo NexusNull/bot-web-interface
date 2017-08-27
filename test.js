@@ -1,9 +1,12 @@
 /**
  * Created by Nexus on 15.08.2017.
  */
-var socketServer = require("./main");
+var botWebInterface = require("./main");
 
-var publisher = socketServer.SocketServer.getPublisher();
+botWebInterface.startOnPort(120);
+var publisher = botWebInterface.SocketServer.getPublisher();
+
+
 
 publisher.setStructure([
     {name: "name", type: "text", label: "name"},
