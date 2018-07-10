@@ -8,6 +8,10 @@
   },
   "author": "Patric Wellershaus",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fansana/bot-web-interface"
+  },
   "dependencies": {
     "express": "^4.15.3",
     "extend": "^3.0.1",

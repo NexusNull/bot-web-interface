@@ -5,7 +5,7 @@ var WebServer = require("./webServer/WebServer");
 var SocketServer = require("./webServer/SocketServer");
 
 var BotWebInterface = {
-    WebServer:WebServer,
+    WebServer: WebServer,
     SocketServer: SocketServer,
     startOnPort: function (port) {
         WebServer.openSocket(port);

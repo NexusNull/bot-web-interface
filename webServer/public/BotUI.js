@@ -21,10 +21,10 @@ BotUi.prototype.create = function () {
         var name = this.structure[i].name;
         var label = this.structure[i].label;
         var type = this.structure[i].type;
-        var options = this.structure[i].options
+        var options = this.structure[i].options;
         switch (type) {
             case "text":
-                html += "<div class='" + name + " textDisplay boxRow'><div class='textDisplayLabel'>" + label + ": </div><div class='textDisplayValue'>sdfsdfsdf</div></div>";
+                html += "<div class='" + name + " textDisplay boxRow'><div class='textDisplayLabel'>" + label + ": </div><div class='textDisplayValue'></div></div>";
                 break;
             case "progressBar":
                 if (!options)
