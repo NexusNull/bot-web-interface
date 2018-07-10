@@ -27,10 +27,6 @@ var Client = function (socket, socketServer, id) {
 };
 
 Client.prototype.sendSetup = function (structure, dataList) {
-    var dataIDs = [];
-    for (var i = 0; i < dataList.length; i++)
-        if (dataList[i])
-            dataIDs.push(i);
 
     /**
      * @typedef {object} data
@@ -38,7 +34,6 @@ Client.prototype.sendSetup = function (structure, dataList) {
      * @typedef {Array<object>} data.structure;
      */
     var res = {
-        dataIDs: dataIDs,
         dataList: dataList,
         structure: structure,
     };
@@ -48,16 +43,23 @@ Client.prototype.sendSetup = function (structure, dataList) {
 };
 
 Client.prototype.sendUpdate = function (dataList) {
-    if(!this.setupSend)
+    if (!this.setupSend)
         return;
     this.socket.emit("updateBotUI", dataList);
 };
 
 Client.prototype.pushData = function (id, name, value) {
-    if(!this.setupSend)
+    if (!this.setupSend)
         return;
     var data = {id: id, name: name, value: value};
     this.socket.emit("updateProperty", data);
+};
+Client.prototype.removeInterface = function (dataExchanger) {
+    this.socket.emit("removeBotUI", {id:dataExchanger.id});
+};
+
+Client.prototype.createInterface = function (dataExchanger) {
+    this.socket.emit("createBotUI", {id:dataExchanger.id});
 };
 
 module.exports = Client;

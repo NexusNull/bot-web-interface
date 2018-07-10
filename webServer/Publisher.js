@@ -3,19 +3,19 @@
  */
 
 var DataExchanger = require("./DataExchanger");
-
+var dataSourcesCount = 0;
 var Publisher = function (socketServer) {
     var self = this;
     this.socketServer = socketServer;
     this.structure = [];
-    this.dataList = [];
+    this.dataList = {};
     this.dataSources = [];
     this.clients = [];
 
     setInterval(function () {
         for (var i in self.dataSources) {
             if (self.dataSources[i]) {
-                self.dataList[i] = self.dataSources[i].getData();
+                self.dataList[self.dataSources[i].id] = self.dataSources[i].getData();
             }
         }
         for (var i in self.clients) {
@@ -38,14 +38,30 @@ Publisher.prototype.clientLeft = function (client) {
 };
 
 Publisher.prototype.createInterface = function () {
-
-    var dataSource = new DataExchanger(this, this.dataSources.length);
+    let dataSource = new DataExchanger(this, dataSourcesCount++);
     this.dataSources.push(dataSource);
+    for (let i in this.clients) {
+        if (this.clients[i]) {
+            this.clients[i].createInterface(dataSource)
+        }
+    }
     return dataSource;
 };
 
 Publisher.prototype.removeInterface = function (dataExchanger) {
-    delete this.dataList[dataExchanger.id];
+    for (let i in this.clients) {
+        if (this.clients[i]) {
+            this.clients[i].removeInterface(dataExchanger)
+        }
+    }
+
+    for (let i = 0; i < this.dataSources.length; i++) {
+        if (this.dataSources[i].id == dataExchanger.id) {
+            this.dataSources.splice(i, 1);
+            break;
+        }
+    }
+    delete this.dataList[dataExchanger.id + ''];
 };
 
 Publisher.prototype.setStructure = function (structure) {

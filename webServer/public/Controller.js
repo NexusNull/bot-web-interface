@@ -29,17 +29,18 @@ Controller.prototype.start = function () {
          * @typedef {Array<int>} data.dataIDs
          * @typedef {Array<object>} data.structure;
          */
-        self.dataIDs = data.dataIDs;
+        console.log(data)
         self.dataList = data.dataList;
         self.structure = data.structure;
 
-        for (var i in self.dataIDs) {
-            var botUI = new BotUi(self.dataIDs[i], self.structure);
+        for (var i in self.dataList) {
+            var botUI = new BotUi(i, self.structure);
             botUI.create();
-            self.botUIs[self.dataIDs[i]] = botUI;
+            self.botUIs[i] = botUI;
         }
         for (var i in self.dataList) {
-            self.botUIs[i].update(self.dataList[i]);
+            if(self.botUIs[i])
+                self.botUIs[i].update(self.dataList[i]);
         }
     });
 
@@ -62,21 +63,25 @@ Controller.prototype.start = function () {
 
     socket.on("updateBotUI", function (data) {
         for (var i in data) {
-            if(self.botUIs[i])
+            if (self.botUIs[i])
                 self.botUIs[i].update(data[i]);
         }
     });
 
-    socket.on("updateProperty",function(data){
-        if(self.botUIs[data.id])
-            self.botUIs[data.id].updateProperty(data.name,data.value);
+    socket.on("updateProperty", function (data) {
+        if (self.botUIs[data.id])
+            self.botUIs[data.id].updateProperty(data.name, data.value);
     });
 
     socket.on("removeBotUI", function (data) {
+        if(self.botUIs[data.id])
+            self.botUIs[data.id].destroy();
     });
 
-    socket.on("createBotUi", function (data) {
-
+    socket.on("createBotUI", function (data) {
+        var botUI = new BotUi(data.id, self.structure);
+        botUI.create();
+        self.botUIs[data.id] = botUI;
     });
 
     socket.open();
