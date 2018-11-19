@@ -15,6 +15,7 @@
   "dependencies": {
     "express": "^4.15.3",
     "extend": "^3.0.1",
+    "ip-address": "^5.8.9",
     "pngjs-image": "^0.11.7",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3"

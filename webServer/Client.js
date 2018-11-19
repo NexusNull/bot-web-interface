@@ -2,13 +2,11 @@
  * Created by Nexus on 01.08.2017.
  */
 
-var validTokens = ["all"];
 
 var Client = function (socket, socketServer, id) {
     var self = this;
     this.socket = socket;
     this.socketServer = socketServer;
-    this.token = null;
     this.id = id;
     this.setupSend = false;
 
@@ -16,10 +14,6 @@ var Client = function (socket, socketServer, id) {
      * @param data {object}
      * @param data.token {string}
      */
-    socket.on("auth", function (data) {
-        self.token = (data.token) ? data.token : null;
-
-    });
 
     socket.on("disconnect", function (data) {
         self.socketServer.removeClient(self);

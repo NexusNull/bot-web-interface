@@ -20,9 +20,13 @@ Controller.prototype.start = function () {
     });
 
     socket.on("connect", function () {
-        socket.emit("auth", {token: "all"});
+        socket.emit("auth", {password: ""});
     });
 
+    socket.on("message",function(){
+        let password = prompt("Password required");
+        socket.emit("auth", {password: password})
+    })
     socket.on("setup", function (data) {
         /**
          * @typedef {object} data
