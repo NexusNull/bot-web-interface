@@ -3,13 +3,21 @@
     src: url(/m5x7.ttf);
 }
 
-*{
+body{
     font-family: m5x7, Helvetica, Arial, sans-serif;
     font-size: 24px;
     line-height: 22px;
     color: white;
 }
 
+*{
+    webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+#pb-container > * {
+    webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
 body{
     background-color: black;
 }
@@ -51,4 +59,7 @@ body{
 }
 .value{
     display:inline;
+}
+#pb-container{
+ color: black;
 }

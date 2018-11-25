@@ -4,11 +4,9 @@
 const Server = new require('socket.io');
 const Client = require("./Client");
 const Publisher = require("./Publisher");
-const IPv6 = require("ip-address").Address6;
-const IPv4 = require("ip-address").Address4;
+const sha512 = require('js-sha512').sha512;
 var defaultPort = 81;
 var socketOpen = false;
-var ipTries = {};
 
 var SocketServer = function () {
     this.clients = [];
@@ -17,9 +15,11 @@ var SocketServer = function () {
     this.password = null;
     this.io = null;
 };
-SocketServer.prototype.setPassword = function(password){
+
+SocketServer.prototype.setPassword = function (password) {
     this.password = password;
 };
+
 SocketServer.prototype.getPublisher = function () {
     return this.publisher;
 };
@@ -42,38 +42,53 @@ SocketServer.prototype.openSocket = function (port) {
     this.io = new Server((port) ? port : defaultPort);
     this.io.sockets.on('connection', function (socket) {
         var client = new Client(socket, self, self.clients.length);
-        var ipAddress = socket.handshake.address;
-
-        var ip = new IPv6(ipAddress);
-        var ipRep = "v6";
-        if(!ip.valid && ip.v4){
-            ip = new IPv4(ipAddress);
-            ipRep = "v4";
+        if(self.password != null){
+            var puzzle = Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000000) + new Date();
+            var difficulty = 8;
+            socket.emit("authRequired", {puzzle: puzzle, difficulty: difficulty});
+        } else {
+            socket.emit("noAuthRequired");
         }
-
-        ipRep += ip.parsedAddress[0]+"."+ip.parsedAddress[1]+"."+ip.parsedAddress[2]+"."+ip.parsedAddress[3];
         socket.on("auth", function (auth) {
-            if(ipTries[ipRep] && ipTries[ipRep] > 10)
-                socket.disconnect();
-            if(self.password == null){
+            console.log(auth)
+            if (self.password == null) {
                 self.publisher.clientJoined(client);
                 self.clients.push(client);
-            } else if(auth.password == self.password){
-                self.publisher.clientJoined(client);
-                self.clients.push(client);
-                if(ipTries[ipRep])
-                    ipTries[ipRep] = 1;
+                return;
+            }
+            if (auth.solution && (auth.solution+"").length < 20) {
+                var hash = sha512.digest(puzzle + auth.solution);
+                var match = true;
+                console.log(hash);
+                for (let i = 0; i < difficulty;i+=8){
+                    var byte;
+                    if(difficulty-i > 8){
+                        byte = hash[Math.floor(i/8)];
+                    } else {
+                        byte = hash[Math.floor(i/8)] >> 8-(difficulty-i);
+                    }
+                    if(byte !== 0){
+                        match = false;
+                        break;
+                    }
+                }
+                if(!match)
+                    socket.disconnect();
             } else {
-                socket.send("authRequired");
-                if(!ipTries[ipRep])
-                    ipTries[ipRep] = 1;
-                else
-                    ipTries[ipRep]++;
-                console.log("Ip: "+ipRep+" tried to login but failed authentication tries"+ipTries[ipRep]);
+                socket.disconnect();
+            }
+            if (auth.password === self.password) {
+                self.publisher.clientJoined(client);
+                self.clients.push(client);
+            } else {
+                puzzle = Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000000) + new Date();
+                socket.emit("authRequired", {puzzle: puzzle, difficulty: difficulty});
             }
         });
+        socket.on("disconnect", function () {
+            self.removeClient(client);
+        })
     });
-
 };
 
 

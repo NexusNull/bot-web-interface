@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Bot Controller</title>
+    <link rel="stylesheet" type="text/css" href="prompt-boxes.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="socket.io.js"></script>
     <script src="BotUI.js"></script>
     <script src="Controller.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-
+    <script src="sha512.js"></script>
+    <script src="prompt-boxes.js"></script>
 </head>
 <body>
     <div class="botUIContainer"></div>
@@ -16,6 +18,21 @@
 
 </body>
 <script type="application/javascript">
+    var pb = new PromptBoxes({
+        // top or bottom
+        toastDir: 'top',
+        // max number of toasts to display
+        toastMax: 5,
+        // auto dismiess after 5 seconds
+        // 0 = never
+        toastDuration: 5000,
+        // is dissmissable
+        toastClose: false,
+        // shows prompt as position absolute
+        promptAsAbsolute: true,
+        // animation speed
+        animationSpeed: 500
+    });
     var controller = new Controller();
     controller.start();
 </script>

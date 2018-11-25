@@ -15,9 +15,6 @@ var Client = function (socket, socketServer, id) {
      * @param data.token {string}
      */
 
-    socket.on("disconnect", function (data) {
-        self.socketServer.removeClient(self);
-    })
 };
 
 Client.prototype.sendSetup = function (structure, dataList) {

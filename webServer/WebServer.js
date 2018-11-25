@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var defaultPort = 80;
 var socketOpen = false;
+var path = require("path");
 var WebServer = function () {
 };
 
@@ -16,7 +17,15 @@ WebServer.prototype.openSocket = function (port) {
     port = (port) ? port : defaultPort;
 
     app.use('/', express.static(__dirname + '/public'));
-
+    app.use("/sha512.js", function (req, res, next) {
+        res.sendFile(path.resolve(__dirname + "/../node_modules/js-sha512/build/sha512.min.js"));
+    });
+    app.use("/prompt-boxes.js", function (req, res, next) {
+        res.sendFile(path.resolve(__dirname + "/../node_modules/prompt-boxes/dist/prompt-boxes.min.js"));
+    });
+    app.use("/prompt-boxes.css", function (req, res, next) {
+        res.sendFile(path.resolve(__dirname + "/../node_modules/prompt-boxes/dist/prompt-boxes.min.css"));
+    });
     app.use(function (req, res, next) {
         res.status(404).send(" 404: Page not found");
     });
