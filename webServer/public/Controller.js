@@ -21,7 +21,7 @@ Controller.prototype.start = function () {
         const hash = sha512.digest(puzzle+id);
         var match = true;
         for (let i = 0; i < difficulty;i+=8){
-            var byte
+            var byte;
             if(difficulty-i > 8){
                 byte = hash[Math.floor(i/8)];
             } else {
@@ -43,7 +43,6 @@ Controller.prototype.start = function () {
          * @typedef {Array<int>} data.dataIDs
          * @typedef {Array<object>} data.structure;
          */
-        console.log("asdasd");
         self.dataList = data.dataList;
         self.structure = data.structure;
 

@@ -45,6 +45,7 @@ SocketServer.prototype.openSocket = function (port) {
         if(self.password != null){
             var puzzle = Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000000) + new Date();
             var difficulty = 8;
+
             socket.emit("authRequired", {puzzle: puzzle, difficulty: difficulty});
         } else {
             socket.emit("noAuthRequired");
