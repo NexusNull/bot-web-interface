@@ -49,6 +49,9 @@ BotUi.prototype.create = function () {
             case "button":
                 //TODO implement later
                 break;
+            case "botUI":
+
+                break;
 
         }
     }

@@ -44,14 +44,13 @@ SocketServer.prototype.openSocket = function (port) {
         var client = new Client(socket, self, self.clients.length);
         if(self.password != null){
             var puzzle = Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000000) + new Date();
-            var difficulty = 8;
+            var difficulty = 0;
 
             socket.emit("authRequired", {puzzle: puzzle, difficulty: difficulty});
         } else {
             socket.emit("noAuthRequired");
         }
         socket.on("auth", function (auth) {
-            console.log(auth)
             if (self.password == null) {
                 self.publisher.clientJoined(client);
                 self.clients.push(client);
@@ -60,7 +59,6 @@ SocketServer.prototype.openSocket = function (port) {
             if (auth.solution && (auth.solution+"").length < 20) {
                 var hash = sha512.digest(puzzle + auth.solution);
                 var match = true;
-                console.log(hash);
                 for (let i = 0; i < difficulty;i+=8){
                     var byte;
                     if(difficulty-i > 8){
