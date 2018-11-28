@@ -4,11 +4,11 @@
 var botWebInterface = require("./main");
 
 botWebInterface.startOnPort(80);
-botWebInterface.setPassword("1")
 var publisher = botWebInterface.SocketServer.getPublisher();
 
 
 publisher.setStructure([
+    {name: "botui", type: "botUI", label: "BotUi"},
     {name: "name", type: "text", label: "name"},
     {name: "inv", type: "text", label: "Inventory"},
     {name: "level", type: "text", label: "Level"},
