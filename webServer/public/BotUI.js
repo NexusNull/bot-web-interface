@@ -2,9 +2,11 @@
  * Created by Nexus on 30.07.2017.
  */
 
-var BotUi = function (id, structure) {
+var BotUi = function (id, structure, parent, attachTarget) {
     this.id = id;
     this.structure = structure;
+    this.parent = parent ? parent : null;
+    this.attachTarget = attachTarget ? attachTarget : null;
     this.element = null;
 };
 
@@ -34,13 +36,13 @@ BotUi.prototype.create = function () {
                 html += "<div class='" + name + " progressBarDisplay boxRow'>  <div class='border'><div class='bar' style='background-color: " + options.color + "'> </div> <div class='barLabel'>" + label + ": <div class='value'>0%</div></div>  </div>  </div>";
                 break;
             case "image":
-                if(!options) {
+                if (!options) {
                     options = {
                         width: 200,
                         height: 200
                     };
                 }
-                    html += "<div class='"+name+" imageDisplay boxRow'> <img src='' style='width:"+options.width+"px;height:"+options.height+"px;'/> </div>";
+                html += "<div class='" + name + " imageDisplay boxRow'> <img src='' style='width:" + options.width + "px;height:" + options.height + "px;'/> </div>";
 
                 break;
             case "graph":
@@ -49,13 +51,23 @@ BotUi.prototype.create = function () {
             case "button":
                 //TODO implement later
                 break;
+            case "botUI":
+                html += "<div class='" + name + " subBotUI boxRow'></div>";
+                break;
+
 
         }
     }
     element.innerHTML = html;
     this.element = element;
-    var container = document.getElementsByClassName("botUIContainer")[0];
-    container.appendChild(element);
+    if(this.parent){
+        let container = this.parent.element.getElementsByClassName("subBotUI "+this.attachTarget)[0];
+        container.appendChild(element);
+    } else {
+        let container = document.getElementsByClassName("botUIContainer")[0];
+        container.appendChild(element);
+    }
+
 };
 
 /**
@@ -66,7 +78,7 @@ BotUi.prototype.render = function () {
         var name = this.structure[i].name;
         var type = this.structure[i].type;
         var value = this.data[name];
-        if(value === undefined)
+        if (value === undefined)
             continue;
         var row = this.element.getElementsByClassName(name)[0];
         switch (type) {
@@ -83,7 +95,8 @@ BotUi.prototype.render = function () {
             case "graph":
                 //TODO implement later
                 break;
-
+            case "botUI":
+                break;
         }
     }
 

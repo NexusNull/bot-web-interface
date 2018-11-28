@@ -25,7 +25,7 @@ Client.prototype.sendSetup = function (structure, dataList) {
      * @typedef {Array<object>} data.structure;
      */
     var res = {
-        dataList: dataList,
+        dataCache: dataList,
         structure: structure,
     };
 
@@ -45,12 +45,15 @@ Client.prototype.pushData = function (id, name, value) {
     var data = {id: id, name: name, value: value};
     this.socket.emit("updateProperty", data);
 };
-Client.prototype.removeInterface = function (dataExchanger) {
-    this.socket.emit("removeBotUI", {id:dataExchanger.id});
+
+Client.prototype.removeInterface = function (botUI) {
+    this.socket.emit("removeBotUI", {id: botUI.id});
 };
 
-Client.prototype.createInterface = function (dataExchanger) {
-    this.socket.emit("createBotUI", {id:dataExchanger.id});
+Client.prototype.createInterface = function (botUI) {
+    var structure = botUI.getStructure();
+    structure.id = botUI.id;
+    this.socket.emit("createBotUI", structure);
 };
 
 module.exports = Client;

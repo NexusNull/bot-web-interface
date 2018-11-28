@@ -2,26 +2,29 @@
  * Created by Nexus on 16.08.2017.
  */
 
-var DataExchanger = require("./DataExchanger");
-var dataSourcesCount = 0;
+var BotUI = require("./BotUI");
+var botUICount = 0;
 var Publisher = function (socketServer) {
     var self = this;
     this.socketServer = socketServer;
-    this.structure = [];
-    this.dataList = {};
-    this.dataSources = [];
+    this.defaultStructure = [];
+    this.botUIs = {};
     this.clients = [];
 
     setInterval(function () {
-        for (var i in self.dataSources) {
-            if (self.dataSources[i]) {
-                self.dataList[self.dataSources[i].id] = self.dataSources[i].getData();
-            }
+        for (let i in self.botUIs) {
+            let botUI = self.botUIs[i];
+            if(botUI != null)
+                botUI.fetchData();
         }
-        for (var i in self.clients) {
-            if (self.clients[i]) {
-                self.clients[i].sendUpdate(self.dataList);
-            }
+        let data = {};
+        for (let i in self.botUIs) {
+            let botUI = self.botUIs[i];
+            if(botUI != null)
+                data[botUI.id] = botUI.getData();
+        }
+        for (let i in self.clients) {
+            self.clients[i].sendUpdate(data);
         }
     }, 1000);
 };
@@ -29,45 +32,82 @@ var Publisher = function (socketServer) {
 Publisher.prototype.clientJoined = function (client) {
     this.clients.push(client);
     console.log("Client " + client.id + " joined.");
-    client.sendSetup(this.structure, this.dataList);
+    let structure = {};
+    for (let i in this.botUIs) {
+        let botUI = this.botUIs[i];
+        if(botUI != null)
+            structure[botUI.id] = botUI.getStructure();
+    }
+    let data = {};
+    for (let i in this.botUIs) {
+        let botUI = this.botUIs[i];
+        if(botUI != null)
+            data[botUI.id] = botUI.getData();
+    }
+    client.sendSetup(structure, data);
 };
 
 Publisher.prototype.clientLeft = function (client) {
     delete this.clients[client.id];
     console.log("Client " + client.id + " left");
 };
-
-Publisher.prototype.createInterface = function () {
-    let dataSource = new DataExchanger(this, dataSourcesCount++);
-    this.dataSources.push(dataSource);
+/**
+ *
+ * @param structure
+ * @param parent
+ * @param attachTarget
+ * @returns {BotUI}
+ */
+Publisher.prototype.createInterface = function (structure, parent, attachTarget) {
+    if (!structure)
+        structure = this.defaultStructure;
+    let botUI = new BotUI(this, botUICount++, structure, parent, attachTarget);
+    this.botUIs[botUI.id] = botUI;
     for (let i in this.clients) {
         if (this.clients[i]) {
-            this.clients[i].createInterface(dataSource)
+            this.clients[i].createInterface(botUI)
         }
     }
-    return dataSource;
+    return botUI;
 };
-
-Publisher.prototype.removeInterface = function (dataExchanger) {
+/**
+ * Remove Interface from Publisher and client
+ * @param botUI
+ */
+Publisher.prototype.removeInterface = function (botUI) {
     for (let i in this.clients) {
         if (this.clients[i]) {
-            this.clients[i].removeInterface(dataExchanger)
+            this.clients[i].removeInterface(botUI)
         }
     }
-
-    for (let i = 0; i < this.dataSources.length; i++) {
-        if (this.dataSources[i].id == dataExchanger.id) {
-            this.dataSources.splice(i, 1);
-            break;
-        }
+    let ids = botUI.destroy();
+    for (let id of ids) {
+        this.botUIs[id] = null;
     }
-    delete this.dataList[dataExchanger.id + ''];
 };
 
+/**
+ * Sets the default structure to be used for top level botUIs
+ * @param {object} structure
+ * @deprecated use setDefaultStructure instead
+ */
 Publisher.prototype.setStructure = function (structure) {
-    this.structure = structure;
+    this.defaultStructure = structure;
 };
 
+/**
+ * Sets the default structure to be used for top level botUIs
+ * @param {object} structure
+ */
+Publisher.prototype.setDefaultStructure = function (structure) {
+    this.defaultStructure = structure;
+};
+/**
+ * pushes data to client
+ * @param {number} id Id of botUI
+ * @param {string} name Name of the attribute
+ * @param {string|number} value Value to be set
+ */
 Publisher.prototype.pushData = function (id, name, value) {
     for (var i = 0; i < this.clients.length; i++) {
         if (this.clients[i]) {

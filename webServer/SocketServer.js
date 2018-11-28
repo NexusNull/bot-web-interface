@@ -10,7 +10,7 @@ var socketOpen = false;
 
 var SocketServer = function () {
     this.clients = [];
-    this.structure = [];
+    this.defaultStructure = [];
     this.publisher = new Publisher();
     this.password = null;
     this.io = null;
@@ -51,7 +51,6 @@ SocketServer.prototype.openSocket = function (port) {
             socket.emit("noAuthRequired");
         }
         socket.on("auth", function (auth) {
-            console.log(auth)
             if (self.password == null) {
                 self.publisher.clientJoined(client);
                 self.clients.push(client);
@@ -60,7 +59,6 @@ SocketServer.prototype.openSocket = function (port) {
             if (auth.solution && (auth.solution+"").length < 20) {
                 var hash = sha512.digest(puzzle + auth.solution);
                 var match = true;
-                console.log(hash);
                 for (let i = 0; i < difficulty;i+=8){
                     var byte;
                     if(difficulty-i > 8){

@@ -4,7 +4,7 @@
 var Controller = function () {
     this.botAmount = 0;
     this.dataIDs = null;
-    this.structure = null;
+    this.defaultStructure = null;
 
     this.botUIs = {};
     this.socket = null;
@@ -17,51 +17,69 @@ Controller.prototype.start = function () {
     socket = io("http://" + host + ":" + (parseInt(port) + 1), {
         autoConnect: false
     });
+
     function findHash(puzzle, difficulty, id, success) {
-        const hash = sha512.digest(puzzle+id);
+        const hash = sha512.digest(puzzle + id);
         var match = true;
-        for (let i = 0; i < difficulty;i+=8){
+        for (let i = 0; i < difficulty; i += 8) {
             var byte;
-            if(difficulty-i > 8){
-                byte = hash[Math.floor(i/8)];
+            if (difficulty - i > 8) {
+                byte = hash[Math.floor(i / 8)];
             } else {
-                byte = hash[Math.floor(i/8)] >> 8-(difficulty-i);
+                byte = hash[Math.floor(i / 8)] >> 8 - (difficulty - i);
             }
-            if(byte !== 0){
+            if (byte !== 0) {
                 match = false;
                 break;
             }
         }
-        if(!match)
-            setTimeout(findHash.bind(null,puzzle,difficulty,id+1,success),0);
+        if (!match)
+            setTimeout(findHash.bind(null, puzzle, difficulty, id + 1, success), 0);
         else
             success(id);
     }
+
     socket.on("setup", function (data) {
         /**
          * @typedef {object} data
          * @typedef {Array<int>} data.dataIDs
          * @typedef {Array<object>} data.structure;
          */
-        self.dataList = data.dataList;
+        self.dataCache = data.dataCache;
         self.structure = data.structure;
 
-        for (let i in self.dataList) {
-            var botUI = new BotUi(i, self.structure);
-            botUI.create();
-            self.botUIs[i] = botUI;
+        let ids = [];
+        for (let id in self.structure) {
+            ids.push(id);
         }
-        for (let i in self.dataList) {
+        ids.sort(function (a, b) {
+            return a - b
+        });
+        for (let id of ids) {
+            let structure = self.structure[id];
+            if (structure.parent != null) {
+
+                let botUI = new BotUi(id, structure.structure, self.botUIs[structure.parent], structure.attachTarget);
+                botUI.create();
+                self.botUIs[id] = botUI;
+            } else {
+
+                let botUI = new BotUi(id, structure.structure);
+                botUI.create();
+                self.botUIs[id] = botUI;
+            }
+        }
+        for (let i in self.dataCache) {
             if (self.botUIs[i])
-                self.botUIs[i].update(self.dataList[i]);
+                self.botUIs[i].update(self.dataCache[i]);
         }
     });
     socket.on("authRequired", function (challenge) {
         console.log(challenge)
-        findHash(challenge.puzzle, challenge.difficulty,0,function(solution){
-            console.log("difficulty: "+challenge.difficulty+"| tries: "+solution);
-            pb.prompt(function(password){
-                    socket.emit("auth", {password: password, solution:solution})
+        findHash(challenge.puzzle, challenge.difficulty, 0, function (solution) {
+            console.log("difficulty: " + challenge.difficulty + "| tries: " + solution);
+            pb.prompt(function (password) {
+                    socket.emit("auth", {password: password, solution: solution})
                 }, // Callback
                 'Password',  // Prompt text
                 'password',  // Input type, or 'textarea'
@@ -71,21 +89,20 @@ Controller.prototype.start = function () {
         });
     });
     socket.on("noAuthRequired", function () {
-        socket.emit("auth", )
+        socket.emit("auth",)
     });
 
     socket.on("updateStructure", function (data) {
         //TODO: implement
         return;
 
-        self.structure = data.structure;
 
         for (var j in self.botUIs) {
 
         }
 
         for (var i in self.dataIDs) {
-            var botUI = new BotUi(self.dataIDs[i], self.structure);
+            var botUI = new BotUi(self.dataIDs[i],);
             botUI.create();
             self.botUIs[self.dataIDs[i]] = botUI;
         }
@@ -108,10 +125,16 @@ Controller.prototype.start = function () {
             self.botUIs[data.id].destroy();
     });
 
-    socket.on("createBotUI", function (data) {
-        var botUI = new BotUi(data.id, self.structure);
-        botUI.create();
-        self.botUIs[data.id] = botUI;
+    socket.on("createBotUI", function (dataBotUI) {
+        if (dataBotUI.parent != null) {
+            let botUI = new BotUi(dataBotUI.id, dataBotUI.structure, self.botUIs[dataBotUI.parent], dataBotUI.attachTarget);
+            botUI.create();
+            self.botUIs[dataBotUI.id] = botUI;
+        } else {
+            let botUI = new BotUi(dataBotUI.id, dataBotUI.structure);
+            botUI.create();
+            self.botUIs[dataBotUI.id] = botUI;
+        }
     });
 
     socket.open();
