@@ -6,13 +6,13 @@ var BotUi = function (id, structure, parent, attachTarget) {
     this.id = id;
     this.structure = structure;
     this.parent = parent ? parent : null;
+    this.children = [];
     this.attachTarget = attachTarget ? attachTarget : null;
     this.element = null;
 };
 
 BotUi.prototype.destroy = function () {
-    var container = document.getElementsByClassName("botUIContainer")[0];
-    container.removeChild(this.element);
+    this.element.parentNode.removeChild(this.element);
 };
 
 BotUi.prototype.create = function () {
@@ -60,14 +60,14 @@ BotUi.prototype.create = function () {
     }
     element.innerHTML = html;
     this.element = element;
-    if(this.parent){
-        let container = this.parent.element.getElementsByClassName("subBotUI "+this.attachTarget)[0];
+    if (this.parent) {
+        this.parent.children.push(this);
+        let container = this.parent.element.getElementsByClassName("subBotUI " + this.attachTarget)[0];
         container.appendChild(element);
     } else {
         let container = document.getElementsByClassName("botUIContainer")[0];
         container.appendChild(element);
     }
-
 };
 
 /**

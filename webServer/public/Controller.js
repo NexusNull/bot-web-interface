@@ -10,12 +10,19 @@ var Controller = function () {
     this.socket = null;
 };
 var socket;
+
 Controller.prototype.start = function () {
     var self = this;
     var host = document.location.hostname;
     var port = (document.location.port) ? document.location.port : 80;
+    var password = null;
+    var lastPassword = null;
     socket = io("http://" + host + ":" + (parseInt(port) + 1), {
-        autoConnect: false
+        autoConnect: false,
+        reconnection: false
+    });
+    socket.on('disconnect', function () {
+        socket.connect(callback);
     });
 
     function findHash(puzzle, difficulty, id, success) {
@@ -45,8 +52,15 @@ Controller.prototype.start = function () {
          * @typedef {Array<int>} data.dataIDs
          * @typedef {Array<object>} data.structure;
          */
+        console.log(self.botUIs);
+        for (var key in self.botUIs) {
+            self.botUIs[key].destroy();
+        }
+
         self.dataCache = data.dataCache;
         self.structure = data.structure;
+        if (password == null)
+            password = lastPassword;
 
         let ids = [];
         for (let id in self.structure) {
@@ -75,17 +89,22 @@ Controller.prototype.start = function () {
         }
     });
     socket.on("authRequired", function (challenge) {
-        console.log(challenge)
         findHash(challenge.puzzle, challenge.difficulty, 0, function (solution) {
             console.log("difficulty: " + challenge.difficulty + "| tries: " + solution);
-            pb.prompt(function (password) {
-                    socket.emit("auth", {password: password, solution: solution})
-                }, // Callback
-                'Password',  // Prompt text
-                'password',  // Input type, or 'textarea'
-                '', // Default value
-                'Submit',  // Submit text
-            );
+            if (!password) {
+                pb.prompt(function (password) {
+                        socket.emit("auth", {password: password, solution: solution});
+                        lastPassword = password;
+                    }, // Callback
+                    'Password',  // Prompt text
+                    'password',  // Input type, or 'textarea'
+                    '', // Default value
+                    'Submit',  // Submit text
+                );
+            } else {
+                socket.emit("auth", {password: password, solution: solution});
+            }
+
         });
     });
     socket.on("noAuthRequired", function () {
@@ -121,8 +140,7 @@ Controller.prototype.start = function () {
     });
 
     socket.on("removeBotUI", function (data) {
-        if (self.botUIs[data.id])
-            self.botUIs[data.id].destroy();
+        self.destroyBotUI(data.id);
     });
 
     socket.on("createBotUI", function (dataBotUI) {
@@ -139,4 +157,18 @@ Controller.prototype.start = function () {
 
     socket.open();
     this.socket = socket;
+};
+
+Controller.prototype.destroyBotUI = function (id) {
+    var dependents = [id];
+    if (this.botUIs[id]) {
+        for (let i = 0; i < dependents.length; i++) {
+            for(var child of this.botUIs[dependents[i]].children)
+                dependents.push(child.id);
+        }
+    }
+    for(let botUIid of dependents){
+        this.botUIs[botUIid].destroy();
+        delete this.botUIs[botUIid];
+    }
 };
