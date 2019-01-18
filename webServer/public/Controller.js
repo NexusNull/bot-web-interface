@@ -163,11 +163,11 @@ Controller.prototype.destroyBotUI = function (id) {
     var dependents = [id];
     if (this.botUIs[id]) {
         for (let i = 0; i < dependents.length; i++) {
-            for(var child of this.botUIs[dependents[i]].children)
+            for (var child of this.botUIs[dependents[i]].children)
                 dependents.push(child.id);
         }
     }
-    for(let botUIid of dependents){
+    for (let botUIid of dependents) {
         this.botUIs[botUIid].destroy();
         delete this.botUIs[botUIid];
     }

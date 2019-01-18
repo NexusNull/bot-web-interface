@@ -15,7 +15,7 @@ var BotUI = function (publisher, id, structure, parent, attachTarget) {
     };
 };
 
-BotUI.prototype.fetchData = function(){
+BotUI.prototype.fetchData = function () {
     this.cache = this.dataSource();
 };
 
@@ -45,26 +45,33 @@ BotUI.prototype.createSubBotUI = function (structure, attachTarget) {
 BotUI.prototype.getParent = function () {
     return this.parent;
 };
-/**
- *
- * @returns {number[]}
- */
-BotUI.prototype.destroy = function () {
-    // remove from parent
-    let ids = [this.id];
-    for(let i in this.children){
-        ids = ids.concat(this.children[i].destroy());
-    }
 
-    if(this.parent){
+BotUI.prototype._destroy = function () {
+    if (this.parent) {
         delete this.parent.children[this.id];
     }
-    return ids;
+};
+
+BotUI.prototype.destroy = function () {
+    // remove from parent
+    let dependents = [this.id];
+    for (let i = 0; i < dependents.length; i++) {
+        if (this.publisher.botUIs[dependents[i]]) {
+            for (let id in this.publisher.botUIs[dependents[i]].children) {
+                this.publisher.botUIs[dependents[i]].children[id]._destroy();
+                dependents.push(+id);
+            }
+        }
+    }
+    for (let i = 0; i < dependents.length; i++) {
+        delete this.publisher.botUIs[dependents[i]];
+    }
+    return dependents;
 };
 
 BotUI.prototype.getStructure = function () {
     return {
-        parent: this.parent ? this.parent.id: null,
+        parent: this.parent ? this.parent.id : null,
         attachTarget: this.attachTarget,
         structure: this.structure
     };

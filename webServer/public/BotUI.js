@@ -43,7 +43,6 @@ BotUi.prototype.create = function () {
                     };
                 }
                 html += "<div class='" + name + " imageDisplay boxRow'> <img src='' style='width:" + options.width + "px;height:" + options.height + "px;'/> </div>";
-
                 break;
             case "graph":
                 //TODO implement later
@@ -54,8 +53,6 @@ BotUi.prototype.create = function () {
             case "botUI":
                 html += "<div class='" + name + " subBotUI boxRow'></div>";
                 break;
-
-
         }
     }
     element.innerHTML = html;
@@ -99,7 +96,6 @@ BotUi.prototype.render = function () {
                 break;
         }
     }
-
 };
 /**
  * Updates bot data

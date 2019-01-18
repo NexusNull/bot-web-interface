@@ -81,9 +81,6 @@ Publisher.prototype.removeInterface = function (botUI) {
         }
     }
     let ids = botUI.destroy();
-    for (let id of ids) {
-        this.botUIs[id] = null;
-    }
 };
 
 /**
