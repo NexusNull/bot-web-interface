@@ -71,6 +71,9 @@ BotUi.prototype.create = function () {
  * Updates html object with data object
  */
 BotUi.prototype.render = function () {
+    if (!this.data)
+        return;
+
     for (var i in this.structure) {
         var name = this.structure[i].name;
         var type = this.structure[i].type;
