@@ -5,7 +5,6 @@ const Server = new require('socket.io');
 const Client = require("./Client");
 const Publisher = require("./Publisher");
 const sha512 = require('js-sha512').sha512;
-var defaultPort = 81;
 var socketOpen = false;
 
 var SocketServer = function () {
@@ -33,13 +32,13 @@ SocketServer.prototype.removeClient = function (client) {
     }
 };
 
-SocketServer.prototype.openSocket = function (port) {
+SocketServer.prototype.openServer = function (httpServer) {
     if (socketOpen)
         throw Error("Socket already open");
     socketOpen = true;
 
     var self = this;
-    this.io = new Server((port) ? port : defaultPort);
+    this.io = Server(httpServer);
     this.io.sockets.on('connection', function (socket) {
         var client = new Client(socket, self, self.clients.length);
         if(self.password != null){
