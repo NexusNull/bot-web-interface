@@ -6,6 +6,9 @@ var app = express();
 var defaultPort = 80;
 var socketOpen = false;
 var path = require("path");
+
+var httpServer = require('http').createServer(app)
+
 var WebServer = function () {
 };
 
@@ -30,9 +33,10 @@ WebServer.prototype.openSocket = function (port) {
         res.status(404).send(" 404: Page not found");
     });
 
-    app.listen(port, function () {
-        console.log('WebServer listening on port ' + port + '.');
-    });
+    httpServer.listen(port, function () {
+		console.log('WebServer listening on port ' + port + '.');
+	});
+    return httpServer;
 };
 
 module.exports = new WebServer();

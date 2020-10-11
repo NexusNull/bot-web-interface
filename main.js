@@ -10,8 +10,8 @@ var BotWebInterface = {
     socketPort:81,
     webServerPort:80,
     startOnPort: function (port) {
-        WebServer.openSocket(port);
-        SocketServer.openSocket(port + 1)
+        let httpServer = WebServer.openSocket(port);
+        SocketServer.openServer(httpServer)
     },
     setWebServerPort: function(port){
         this.webServerPort = port;
