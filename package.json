@@ -13,11 +13,11 @@
     "url": "https://github.com/NexusNull/bot-web-interface"
   },
   "dependencies": {
-    "express": "^4.15.3",
+    "express": "^4.17.1",
     "extend": ">=3.0.2",
     "js-sha512": "^0.8.0",
     "prompt-boxes": "^2.0.6",
-    "socket.io": "^2.0.3",
-    "socket.io-client": "^2.0.3"
+    "socket.io": "^2.4.1",
+    "socket.io-client": "^2.4.0"
   }
 }
