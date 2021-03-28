@@ -48,7 +48,13 @@ BotUi.prototype.create = function () {
                 //TODO implement later
                 break;
             case "button":
-                //TODO implement later
+                if (!options) {
+                    options = {
+                        width: 200,
+                        height: 200
+                    };
+                }
+                html += "<div class='" + name + " imageDisplay boxRow'> <img src='' style='width:" + options.width + "px;height:" + options.height + "px;'/> </div>";
                 break;
             case "botUI":
                 html += "<div class='" + name + " subBotUI boxRow'></div>";

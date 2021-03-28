@@ -17,7 +17,7 @@ Controller.prototype.start = function () {
     var port = (document.location.port) ? document.location.port : 80;
     var password = null;
     var lastPassword = null;
-    socket = io("http://" + host + ":" + (parseInt(port) + 1), {
+    socket = io("http://" + host + ":" + (parseInt(port)), {
         autoConnect: false,
         reconnection: false
     });
@@ -107,24 +107,9 @@ Controller.prototype.start = function () {
 
         });
     });
+
     socket.on("noAuthRequired", function () {
         socket.emit("auth",)
-    });
-
-    socket.on("updateStructure", function (data) {
-        //TODO: implement
-        return;
-
-
-        for (var j in self.botUIs) {
-
-        }
-
-        for (var i in self.dataIDs) {
-            var botUI = new BotUi(self.dataIDs[i],);
-            botUI.create();
-            self.botUIs[self.dataIDs[i]] = botUI;
-        }
     });
 
     socket.on("updateBotUI", function (data) {

@@ -1,14 +1,11 @@
 /**
  * Created by Nexus on 15.08.2017.
  */
-var botWebInterface = require("./main");
+const BotWebInterface = require("./main");
 
-botWebInterface.startOnPort(80);
-botWebInterface.setPassword("asd")
-var publisher = botWebInterface.SocketServer.getPublisher();
+let BWI = new BotWebInterface({port:2080, password:"asd"});
 
-
-publisher.setDefaultStructure([
+BWI.publisher.setDefaultStructure([
     {name: "name", type: "text", label: "id"},
     {name: "bots", type: "botUI", label: "Status"}
 ]);
@@ -26,7 +23,7 @@ var subInterfaces = [];
  * @returns {BotUI}
  */
 function create() {
-    var a = publisher.createInterface();
+    var a = BWI.publisher.createInterface();
     a.setDataSource(function () {
         return {
             name: a.id,
@@ -42,7 +39,7 @@ for (let l = 0; l < 4; l++) {
 }
 setInterval(function () {
     var a = interfaces.shift();
-    publisher.removeInterface(a);
+    BWI.publisher.removeInterface(a);
     let botUI = create();
     let subBotUI1 = botUI.createSubBotUI([
         {name: "foo", type: "text", label: "foo"},

@@ -1,6 +1,6 @@
 {
   "name": "bot-web-interface",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "A lightweight ui to display information from node js. Structure can be controlled with a simple js object.",
   "main": "main.js",
   "scripts": {
@@ -10,13 +10,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Fansana/bot-web-interface"
+    "url": "https://github.com/NexusNull/bot-web-interface"
   },
   "dependencies": {
     "express": "^4.15.3",
-    "extend": "^3.0.1",
+    "extend": ">=3.0.2",
     "js-sha512": "^0.8.0",
-    "pngjs-image": "^0.11.7",
     "prompt-boxes": "^2.0.6",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3"
