@@ -15,9 +15,10 @@ Controller.prototype.start = function () {
     var self = this;
     var host = document.location.hostname;
     var port = (document.location.port) ? document.location.port : 80;
+    let protocol = document.location.protocol
     var password = null;
     var lastPassword = null;
-    socket = io("http://" + host + ":" + (parseInt(port)), {
+    socket = io(protocol + "//" + host + ":" + (parseInt(port)), {
         autoConnect: false,
         reconnection: false
     });
