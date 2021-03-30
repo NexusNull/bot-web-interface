@@ -9,7 +9,7 @@ class BotUI {
         this.structure = structure;
         this.parent = parent ? parent : null;
         this.attachTarget = attachTarget ? attachTarget : null;
-        this.children = {};
+        this.children = new Map();
         this.cache = {};
         this.dataSource = function () {
             return null;
@@ -34,7 +34,7 @@ class BotUI {
 
     createSubBotUI(structure, attachTarget) {
         let botUI = this.publisher.createInterface(structure, this, attachTarget);
-        this.children[botUI.id] = botUI;
+        this.children.set(botUI.id, botUI);
         return botUI;
     };
 
@@ -42,27 +42,19 @@ class BotUI {
         return this.parent;
     };
 
-    _destroy() {
-        if (this.parent) {
-            delete this.parent.children[this.id];
-        }
-    };
+    destroy(sub) {
+        let destroyed = [this.id];
 
-    destroy() {
-        // remove from parent
-        let dependents = [this.id];
-        for (let i = 0; i < dependents.length; i++) {
-            if (this.publisher.botUIs[dependents[i]]) {
-                for (let id in this.publisher.botUIs[dependents[i]].children) {
-                    this.publisher.botUIs[dependents[i]].children[id]._destroy();
-                    dependents.push(+id);
-                }
-            }
+        for (let child of this.children) {
+            child[1].destroy(true);
+            this.children.delete(child[0])
+            destroyed.push(child[0]);
         }
-        for (let i = 0; i < dependents.length; i++) {
-            delete this.publisher.botUIs[dependents[i]];
-        }
-        return dependents;
+
+        if (!sub)
+            this.publisher.removeInterfaces(destroyed)
+
+        return destroyed;
     };
 
     getStructure() {

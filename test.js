@@ -3,10 +3,10 @@
  */
 const BotWebInterface = require("./main");
 
-let BWI = new BotWebInterface({port:2080, password:"asd"});
+let BWI = new BotWebInterface({port: 2080});
 
 BWI.publisher.setDefaultStructure([
-    {name: "name", type: "text", label: "id"},
+    {name: "name", type: "text", label: "idasd"},
     {name: "bots", type: "botUI", label: "Status"}
 ]);
 
@@ -39,7 +39,7 @@ for (let l = 0; l < 4; l++) {
 }
 setInterval(function () {
     var a = interfaces.shift();
-    BWI.publisher.removeInterface(a);
+    a.destroy();
     let botUI = create();
     let subBotUI1 = botUI.createSubBotUI([
         {name: "foo", type: "text", label: "foo"},
@@ -72,6 +72,6 @@ setInterval(function () {
         }
     });
     interfaces.push(botUI);
-}, 10);
+}, 1000);
 
 

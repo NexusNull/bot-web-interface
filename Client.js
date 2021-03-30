@@ -32,8 +32,8 @@ class Client {
         this.socket.emit("updateProperty", data);
     };
 
-    removeInterface(botUI) {
-        this.socket.emit("removeBotUI", {id: botUI.id});
+    removeInterface(ids) {
+        this.socket.emit("removeBotUI", ids);
     };
 
     createInterface(botUI) {

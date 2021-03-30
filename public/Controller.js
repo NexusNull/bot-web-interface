@@ -20,15 +20,15 @@ Controller.prototype.start = function () {
     var lastPassword = null;
     socket = io(protocol + "//" + host + ":" + (parseInt(port)), {
         autoConnect: false,
-        reconnection: false
+        reconnection: true
     });
     socket.on('disconnect', function () {
-        socket.connect(callback);
+
     });
 
     function findHash(puzzle, difficulty, id, success) {
         const hash = sha512.digest(puzzle + id);
-        var match = true;
+        let match = true;
         for (let i = 0; i < difficulty; i += 8) {
             var byte;
             if (difficulty - i > 8) {
@@ -53,7 +53,6 @@ Controller.prototype.start = function () {
          * @typedef {Array<int>} data.dataIDs
          * @typedef {Array<object>} data.structure;
          */
-        console.log(self.botUIs);
         for (var key in self.botUIs) {
             self.botUIs[key].destroy();
         }
@@ -126,7 +125,7 @@ Controller.prototype.start = function () {
     });
 
     socket.on("removeBotUI", function (data) {
-        self.destroyBotUI(data.id);
+        self.destroyBotUI(data);
     });
 
     socket.on("createBotUI", function (dataBotUI) {
@@ -145,16 +144,11 @@ Controller.prototype.start = function () {
     this.socket = socket;
 };
 
-Controller.prototype.destroyBotUI = function (id) {
-    var dependents = [id];
-    if (this.botUIs[id]) {
-        for (let i = 0; i < dependents.length; i++) {
-            for (var child of this.botUIs[dependents[i]].children)
-                dependents.push(child.id);
+Controller.prototype.destroyBotUI = function (ids) {
+    for (let botUIid of ids) {
+        if (this.botUIs[botUIid]) {
+            this.botUIs[botUIid].destroy();
+            delete this.botUIs[botUIid];
         }
-    }
-    for (let botUIid of dependents) {
-        this.botUIs[botUIid].destroy();
-        delete this.botUIs[botUIid];
     }
 };
