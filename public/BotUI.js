@@ -105,7 +105,7 @@ BotUi.prototype.render = function () {
                 break;
             case "labelProgressBar":
                 row.getElementsByClassName("bar")[0].style.width = value[0] + "%";
-                row.getElementsByClassName("value")[0].innerHTML = value[1] + "%";
+                row.getElementsByClassName("value")[0].innerHTML = value[1];
                 break;
             case "image":
                 row.getElementsByTagName("img")[0].src = value;
