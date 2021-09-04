@@ -36,6 +36,13 @@ BotUi.prototype.create = function () {
                     };
                 html += "<div class='" + name + " progressBarDisplay boxRow'>  <div class='border'><div class='bar' style='background-color: " + options.color + "'> </div> <div class='barLabel'>" + label + ": <div class='value'>0%</div></div>  </div>  </div>";
                 break;
+                case "labelProgressBar":
+                    if (!options)
+                        options = {
+                            color: "green"
+                        };
+                    html += "<div class='" + name + " progressBarDisplay boxRow'>  <div class='border'><div class='bar' style='background-color: " + options.color + "'> </div> <div class='barLabel'>" + label + ": <div class='value'>0%</div></div>  </div>  </div>";
+                    break;
             case "image":
                 if (!options) {
                     options = {
@@ -95,6 +102,10 @@ BotUi.prototype.render = function () {
             case "progressBar":
                 row.getElementsByClassName("bar")[0].style.width = value + "%";
                 row.getElementsByClassName("value")[0].innerHTML = value + "%";
+                break;
+            case "labelProgressBar":
+                row.getElementsByClassName("bar")[0].style.width = value[0] + "%";
+                row.getElementsByClassName("value")[0].innerHTML = value[1] + "%";
                 break;
             case "image":
                 row.getElementsByTagName("img")[0].src = value;
