@@ -24,6 +24,7 @@ class BotWebInterface {
         this.clients = [];
         this.defaultStructure = [];
 
+        this.router = express.Router();
         this.app = express();
         this.server = require('http').createServer(this.app);
         this.io = require('socket.io')(this.server);
@@ -37,16 +38,17 @@ class BotWebInterface {
     }
 
     setRoutes() {
-        this.app.use('/', express.static(__dirname + '/public'));
-        this.app.use("/sha512.js", function (req, res) {
+        this.router.use('/', express.static(__dirname + '/public'));
+        this.router.use("/sha512.js", function (req, res) {
             res.sendFile(path.resolve(require.resolve("js-sha512") + "/../../build/sha512.min.js"));
         });
-        this.app.use("/prompt-boxes.js", function (req, res) {
+        this.router.use("/prompt-boxes.js", function (req, res) {
             res.sendFile(path.resolve(require.resolve("prompt-boxes") + "/../../../dist/prompt-boxes.min.js"));
         });
-        this.app.use("/prompt-boxes.css", function (req, res) {
+        this.router.use("/prompt-boxes.css", function (req, res) {
             res.sendFile(path.resolve(require.resolve("prompt-boxes") + "/../../../dist/prompt-boxes.min.css"));
         });
+        this.app.use(this.router);
         this.app.use(function (req, res) {
             res.status(404).send(" 404: Page not found");
         });

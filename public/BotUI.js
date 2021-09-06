@@ -27,7 +27,11 @@ BotUi.prototype.create = function () {
         var options = this.structure[i].options;
         switch (type) {
             case "text":
-                html += "<div class='" + name + " textDisplay boxRow'><div class='textDisplayLabel'>" + label + ": </div><div class='textDisplayValue'></div></div>";
+                if (!options)
+                    options = {
+                        value_foreground: "white"
+                    };
+                html += "<div class='" + name + " textDisplay boxRow'><div class='textDisplayLabel'>" + label + ": </div><div class='textDisplayValue' style='color: " + options.value_foreground + "'></div></div>";
                 break;
             case "progressBar":
                 if (!options)
