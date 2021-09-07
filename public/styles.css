@@ -32,6 +32,13 @@ body{
 .boxRow{
     margin:5px;
 }
+.box .boxRow {
+	border-bottom: 1px dashed #bbb;
+}
+.box .boxRow:last-child {
+	border-bottom: 0;
+}
+
 
 .textDisplay{
 }
