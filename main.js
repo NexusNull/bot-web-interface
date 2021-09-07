@@ -10,7 +10,7 @@ const sha512 = require('js-sha512').sha512;
 
 class BotWebInterface {
     constructor(config = {}) {
-        this.port = config.port || 80;
+        this.port = config.port || 2080;
 
         if (config.password) {
             if (typeof config.password != "string")
