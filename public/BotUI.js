@@ -31,7 +31,7 @@ BotUi.prototype.create = function () {
                     options = {
                         value_foreground: "white"
                     };
-                html += "<div class='" + name + " textDisplay boxRow'><div class='textDisplayLabel'>" + label + ": </div><div class='textDisplayValue' style='color: " + options.value_foreground + "'></div></div>";
+                html += "<div class='" + name + " textDisplay boxRow'><div class='textDisplayLabel'>" + label + ": </div><div class='textDisplayValue' style='color: " + options.value_foreground + "; float:right'></div></div>";
                 break;
             case "progressBar":
                 if (!options)
@@ -71,6 +71,7 @@ BotUi.prototype.create = function () {
             case "botUI":
                 html += "<div class='" + name + " subBotUI boxRow'></div>";
                 break;
+
         }
     }
     element.innerHTML = html;
@@ -92,13 +93,13 @@ BotUi.prototype.render = function () {
     if (!this.data)
         return;
 
-    for (var i in this.structure) {
-        var name = this.structure[i].name;
-        var type = this.structure[i].type;
-        var value = this.data[name];
+    for (let i in this.structure) {
+        const name = this.structure[i].name;
+        const type = this.structure[i].type;
+        const value = this.data[name];
         if (value === undefined)
             continue;
-        var row = this.element.getElementsByClassName(name)[0];
+        const row = this.element.getElementsByClassName(name)[0];
         switch (type) {
             case "text":
                 row.getElementsByClassName("textDisplayValue")[0].innerHTML = value;

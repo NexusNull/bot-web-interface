@@ -32,15 +32,12 @@ body{
 .boxRow{
     margin:5px;
 }
-.box .boxRow {
-	border-bottom: 1px dashed #bbb;
-}
-.box .boxRow:last-child {
-	border-bottom: 0;
-}
-
 
 .textDisplay{
+    border-bottom: 1px dashed #666;
+}
+.textDisplay:last-child{
+    border-bottom: 0;
 }
 .textDisplayLabel{
     display:inline;
