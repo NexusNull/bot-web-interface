@@ -1,6 +1,6 @@
 {
   "name": "bot-web-interface",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "A lightweight ui to display information from node js. Structure can be controlled with a simple js object.",
   "main": "main.js",
   "scripts": {
