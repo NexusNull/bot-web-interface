@@ -47,9 +47,9 @@ class BotWebInterface {
         this.router.use("/sha512.js", function (req, res) {
             res.sendFile(path.resolve(require.resolve("js-sha512") + "/../../build/sha512.min.js"));
         });
-        console.log(path.resolve(require.resolve("socket.io-client") + "/../../dist/socket.io.min.js"))
+        console.log(path.resolve(require.resolve("socket.io-client") + "/../../../dist/socket.io.msgpack.min.js"))
         this.router.use("/socket.io.js", function (req, res) {
-            res.sendFile(path.resolve(require.resolve("socket.io-client") + "/../../dist/socket.io.msgpack.min.js"));
+            res.sendFile(path.resolve(require.resolve("socket.io-client") + "/../../../dist/socket.io.msgpack.min.js"));
         });
         this.router.use("/prompt-boxes.js", function (req, res) {
             res.sendFile(path.resolve(require.resolve("prompt-boxes") + "/../../../dist/prompt-boxes.min.js"));
