@@ -13,6 +13,7 @@ const customParser = require('socket.io-msgpack-parser');
 class BotWebInterface {
     constructor(config = {}) {
         this.port = config.port || 2080;
+        this.updateRate = config.updateRate || 100;
 
         if (config.password) {
             if (typeof config.password != "string")
@@ -34,7 +35,7 @@ class BotWebInterface {
             parser: customParser
         });
 
-        this.publisher = new Publisher();
+        this.publisher = new Publisher(this.updateRate);
 
 
         this.setRoutes();
