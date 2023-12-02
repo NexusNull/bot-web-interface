@@ -7,6 +7,8 @@ const Client = require("./Client");
 const path = require("path");
 const Publisher = require("./Publisher");
 const sha512 = require('js-sha512').sha512;
+const io = require('socket.io');
+const customParser = require('socket.io-msgpack-parser');
 
 class BotWebInterface {
     constructor(config = {}) {
@@ -27,7 +29,10 @@ class BotWebInterface {
         this.router = express.Router();
         this.app = express();
         this.server = require('http').createServer(this.app);
-        this.io = require('socket.io')(this.server);
+
+        this.io = io(this.server, {
+            parser: customParser
+        });
 
         this.publisher = new Publisher();
 
@@ -42,9 +47,9 @@ class BotWebInterface {
         this.router.use("/sha512.js", function (req, res) {
             res.sendFile(path.resolve(require.resolve("js-sha512") + "/../../build/sha512.min.js"));
         });
-        console.log(path.resolve(require.resolve("socket.io-client") + "/../../dist/socket.io.min.js"))
+        console.log(path.resolve(require.resolve("socket.io-client") + "/../../../dist/socket.io.msgpack.min.js"))
         this.router.use("/socket.io.js", function (req, res) {
-            res.sendFile(path.resolve(require.resolve("socket.io-client") + "/../../dist/socket.io.min.js"));
+            res.sendFile(path.resolve(require.resolve("socket.io-client") + "/../../../dist/socket.io.msgpack.min.js"));
         });
         this.router.use("/prompt-boxes.js", function (req, res) {
             res.sendFile(path.resolve(require.resolve("prompt-boxes") + "/../../../dist/prompt-boxes.min.js"));
