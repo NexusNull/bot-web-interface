@@ -6,7 +6,7 @@ const BotUI = require("./BotUI");
 let botUICount = 0;
 
 class Publisher {
-    constructor() {
+    constructor(updateRate) {
         this.defaultStructure = [];
         this.botUIs = new Map();
         this.clients = [];
@@ -20,7 +20,7 @@ class Publisher {
             for (let i in this.clients) {
                 this.clients[i].sendUpdate(data);
             }
-        }, 100);
+        }, updateRate);
 
     }
 
